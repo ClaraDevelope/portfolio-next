@@ -52,6 +52,7 @@ export default function CertificationsSection() {
                     ? 'object-contain'
                     : 'object-cover'
                 }`}
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
               <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold px-2 py-1 bg-black/80 rounded shadow backdrop-blur-sm">

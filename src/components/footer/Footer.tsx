@@ -6,7 +6,8 @@ import Image from 'next/image';
 export default function Footer() {
   return (
     <footer className="w-full border-t border-white/10 px-4 py-10 text-sm text-gray-400">
-      <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-center gap-6 text-center md:text-left">
+
         
         <div>
           <p className="text-white font-semibold">Clara Manzano Corona</p>

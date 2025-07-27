@@ -70,7 +70,7 @@ export default function ProjectImage({ src, alt, title }: ProjectImageProps) {
           hover: { opacity: 0.2 },
         }}
         transition={{ duration: 0.5 }}
-        className="absolute inset-0 bg-[url('/image/grain.png')] pointer-events-none mix-blend-soft-light z-10"
+        className="absolute inset-0 pointer-events-none mix-blend-soft-light z-10"
       />
 
       {/* Reflejo inferior tipo cine */}

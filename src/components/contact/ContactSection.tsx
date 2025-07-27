@@ -25,24 +25,25 @@ export default function ContactSection() {
     Puedes escribirme por email o conectar conmigo por LinkedIn. Estoy abierta a nuevas oportunidades o simplemente a charlar sobre proyectos.
   </motion.p>
 
-  <div className="flex justify-center gap-6 mt-6">
-    <a
-      href="mailto:claramanzanocorona@gmail.com"
-      className="bg-white text-slate-900 font-medium px-8 py-2 rounded-full shadow-md hover:shadow-lg transition hover:bg-gradient-to-tr from-blue-700 to-indigo-500 hover:text-white"
-    >
-      <Mail size={18} className="inline mr-2" />
-      Enviar email
-    </a>
-    <a
-      href="https://linkedin.com/in/clara-manzano-corona"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="bg-white text-slate-900 font-medium px-8 py-2 rounded-full shadow-md hover:shadow-lg transition hover:bg-gradient-to-tr from-blue-700 to-indigo-500 hover:text-white"
-    >
-      <Linkedin size={18} className="inline mr-2" />
-      Conectar en LinkedIn
-    </a>
-  </div>
+  <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 mt-6">
+  <a
+    href="mailto:claramanzanocorona@gmail.com"
+    className="bg-white text-slate-900 font-medium px-6 py-2 text-sm sm:text-base rounded-full shadow-md hover:shadow-lg transition hover:bg-gradient-to-tr from-blue-700 to-indigo-500 hover:text-white w-full sm:w-auto text-center"
+  >
+    <Mail size={16} className="inline mr-2" />
+    Enviar email
+  </a>
+  <a
+    href="https://linkedin.com/in/clara-manzano-corona"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-white text-slate-900 font-medium px-6 py-2 text-sm sm:text-base rounded-full shadow-md hover:shadow-lg transition hover:bg-gradient-to-tr from-blue-700 to-indigo-500 hover:text-white w-full sm:w-auto text-center"
+  >
+    <Linkedin size={16} className="inline mr-2" />
+    Conectar en LinkedIn
+  </a>
+</div>
+
 </section>
 )  
 }

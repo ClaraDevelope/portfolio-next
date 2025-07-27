@@ -1,4 +1,3 @@
-// app/layout.tsx
 import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import "./globals.css"
@@ -14,9 +13,23 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Portfolio Clara Manzano Corona",
-  description: "Desarrolladora web con enfoque en la claridad del código, la experiencia de usuario y la sostenibilidad digital",
-
+  description: "Desarrolladora web con enfoque en accesibilidad, experiencia de usuario y sostenibilidad digital",
+  keywords: ["Clara Manzano", "portfolio", "desarrolladora web", "frontend", "fullstack", "Next.js", "JavaScript", "React", "Node.js", "sostenibilidad digital", "UX", "UI", "accesibilidad", "Tailwind CSS", "CSS", "HTML", "JavaScript", "TypeScript", "MongoDB", "Git", "GitHub", "desarrollo web", "programación", "tecnología"],
+  authors: [{ name: "Clara Manzano Corona", url: "https://claramanzanocorona.dev" }],
+  creator: "Clara Manzano Corona",
+  openGraph: {
+    title: "Clara Manzano Corona | Portfolio",
+    description: "Desarrolladora web enfocada en la sostenibilidad digital y experiencia de usuario.",
+    url: "https://claramanzanocorona.dev",
+    siteName: "Clara Manzano Corona",
+    locale: "es_ES",
+    type: "website",
+  },
+    icons: {
+    icon: "/icons/icon.webp", 
+  },
 }
+
 
 export default function RootLayout({
   children,
