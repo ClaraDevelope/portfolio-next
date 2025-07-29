@@ -25,9 +25,12 @@ export const metadata: Metadata = {
     locale: "es_ES",
     type: "website",
   },
-    icons: {
-    icon: "/icons/icon.webp", 
-  },
+icons: {
+  icon: [
+    { url: "/icons/favicon.ico", type: "image/x-icon" },
+    { url: "/icons/icon.webp", type: "image/webp" },
+  ],
+},
 }
 
 
