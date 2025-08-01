@@ -102,30 +102,55 @@ export default function ProjectsSection() {
                       ))}
                     </div>
                   </div>
-                  <div className="mt-auto pt-4 flex flex-col gap-2">
-                    <div className="flex gap-3">
-                      {project.url && (
-                        <Link
-                          href={project.url}
-                          target="_blank"
-                          className="px-4 py-2 rounded-l bg-gradient-to-tr from-blue-700 to-indigo-500 text-white text-sm font-semibold hover:scale-101 transition duration-200 flex items-center gap-2"
-                        >
-                          <ExternalLink size={16} />
-                          Ver proyecto
-                        </Link>
-                      )}
-                      {project.gitHub && (
-                        <Link
-                          href={project.gitHub}
-                          target="_blank"
-                          className="px-4 py-2 rounded-l bg-zinc-800 text-white text-sm font-semibold border  border-zinc-700 hover:bg-zinc-900 hover:scale-101 transition duration-200 flex items-center gap-2"
-                        >
-                          <Github size={16} />
-                          GitHub
-                        </Link>
-                      )}
+                    <div className="mt-auto pt-8 flex flex-col gap-2">
+                      <div className="flex gap-5 w-full">
+                        {project.url && (
+                          <Link
+                            href={project.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative inline-flex items-center justify-center gap-2 rounded-l px-4 py-3
+                                      text-sm font-semibold text-white overflow-hidden
+                                      bg-gradient-to-r from-violet-600 via-purple-600 to-blue-600
+                                      hover:from-violet-500 hover:via-purple-500 hover:to-blue-500
+                                      shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/40
+                                      transform-gpu transition-all duration-300 ease-out
+                                      hover:scale-105 hover:-translate-y-0.5
+                                      active:scale-95 active:translate-y-0
+                                      border border-white/10 backdrop-blur-sm w-full
+                                      before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent
+                                      before:translate-x-[-100%] before:skew-x-12 before:transition-transform before:duration-700
+                                      hover:before:translate-x-[200%]"
+                          >
+                            <ExternalLink size={16} className="transition-transform duration-300 group-hover:scale-110 relative z-10" />
+                            <span className="relative z-10">Ver proyecto</span>
+                          </Link>
+                        )}
+                        {project.gitHub && (
+                          <Link
+                            href={project.gitHub}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative inline-flex items-center justify-center gap-2 rounded-l px-4
+                                      text-sm font-semibold text-white overflow-hidden
+                                      bg-gradient-to-r from-slate-800 via-gray-800 to-zinc-800
+                                      hover:from-slate-700 hover:via-gray-700 hover:to-zinc-700
+                                      shadow-lg shadow-black/25 hover:shadow-xl hover:shadow-black/40
+                                      transform-gpu transition-all duration-300 ease-out
+                                      hover:scale-105 hover:-translate-y-0.5
+                                      active:scale-95 active:translate-y-0
+                                      border border-white/20 backdrop-blur-sm w-full
+                                      before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent
+                                      before:translate-x-[-100%] before:skew-x-12 before:transition-transform before:duration-700
+                                      hover:before:translate-x-[200%]"
+                          >
+                            <Github size={16} className="transition-transform duration-300 group-hover:scale-110 relative z-10" />
+                            <span className="relative z-10">GitHub</span>
+                          </Link>
+                        )}
+                      </div>
                     </div>
-                  </div>
+
                 </div>
               </motion.div>
             )

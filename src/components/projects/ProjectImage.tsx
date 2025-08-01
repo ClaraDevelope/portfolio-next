@@ -58,7 +58,7 @@ export default function ProjectImage({ src, alt, title }: ProjectImageProps) {
           src={src || '/placeholder.webp'}
           alt={alt}
           fill
-          className="object-cover"
+          className="object-cover group-hover:scale-110 transition duration-500 ease-in-out"
           unoptimized
         />
       </motion.div>

@@ -18,7 +18,7 @@ export default function TechnologySection() {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.25,
+        staggerChildren: 0.2,
       },
     },
   };
@@ -26,6 +26,27 @@ export default function TechnologySection() {
   const cardVariants: Variants = {
     hidden: { opacity: 0, y: 50, scale: 0.95 },
     visible: { opacity: 1, y: 0, scale: 1 },
+  };
+
+  const transformCategoryName = (name: string) => {
+    switch (name) {
+      case 'lenguajes':
+        return 'Lenguajes';
+      case 'frontend':
+        return 'Frontend';
+      case 'backend':
+        return 'Backend';
+      case 'basesDeDatos':
+        return 'Bases de Datos';
+      case 'herramientasDesarrollo':
+        return 'Herramientas de Desarrollo';
+      case 'seguridad':
+        return 'Seguridad';
+      case 'diseño':
+        return 'Diseño';
+      default:
+        return name;
+    }
   };
 
   return (
@@ -60,12 +81,12 @@ export default function TechnologySection() {
             <motion.div
               key={category}
               variants={cardVariants}
-              transition={{ duration: 0.7, ease: 'easeOut' }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
               whileHover={{
                 boxShadow: '0 0 15px rgba(255, 0, 200, 0.2)',
                 borderColor: '#f0abfc',
               }}
-              className="border border-gray-600 rounded-l p-6 text-left bg-white/5 backdrop-blur-md transition-all duration-300"
+              className="border border-white/10 rounded-2xl p-6 text-left bg-white/5 backdrop-blur-md transition-all duration-300"
             >
               <h3 className="text-xl font-semibold capitalize mb-4 text-gray-100">
                 {transformCategoryName(category)}
@@ -79,7 +100,7 @@ export default function TechnologySection() {
                       scale: 1.05,
                     }}
                     transition={{ type: 'spring', stiffness: 300 }}
-                    className="flex items-center gap-2 bg-white/10 text-sm px-6 py-2 rounded-full backdrop-blur-sm transition-transform text-white/90 border border-white/10 hover:bg-white/20 hover:shadow-inner"
+                    className="flex items-center gap-2 bg-white/10 text-sm px-5 py-2 rounded-full backdrop-blur-sm transition-transform text-white/90 border border-white/10 hover:bg-white/20 hover:shadow-inner"
                   >
                     <Image
                       src={tech.img}
@@ -88,7 +109,7 @@ export default function TechnologySection() {
                       height={24}
                       className="object-contain"
                     />
-                    <span className="pl-2">{tech.name}</span>
+                    <span className="pl-1">{tech.name}</span>
                   </motion.div>
                 ))}
               </div>
@@ -98,17 +119,4 @@ export default function TechnologySection() {
       </div>
     </section>
   );
-}
-
-function transformCategoryName(key: string) {
-  const map: Record<string, string> = {
-    lenguajes: 'Lenguajes',
-    frontend: 'Frontend',
-    backend: 'Backend',
-    basesDeDatos: 'Bases de datos',
-    herramientasDesarrollo: 'Herramientas de desarrollo',
-    seguridad: 'Seguridad',
-    diseño: 'Diseño',
-  };
-  return map[key] || key;
 }
