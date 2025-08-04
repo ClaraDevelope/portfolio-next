@@ -35,7 +35,7 @@ export default function Hero() {
       transition={{ duration: 1.2, ease: "easeOut" }}
       role="region"
       aria-labelledby="hero-heading"
-      className="min-h-[90vh] px-[200px] py-10 bg-[radial-gradient(circle_at_20%_30%,#1e103f_0%,#4c102f_50%,#0a0a0a_100%)] w-full flex flex-col-reverse md:flex-row items-center justify-center gap-12 text-left"
+      className="min-h-[90vh] lg:px-[200px] md:px-[200px] sm:px-[150px] py-10 bg-[radial-gradient(circle_at_20%_30%,#1e103f_0%,#4c102f_50%,#0a0a0a_100%)] w-full flex flex-col-reverse md:flex-row items-center justify-center gap-12 text-left"
     >
       {/* Contenido textual */}
       <div className="flex-1 text-center md:text-left">
@@ -55,7 +55,7 @@ export default function Hero() {
         </motion.h1>
 
         <motion.p
-          className="text-lg lg:text-xl text-gray-300 font-mono h-16 max-w-2xl mb-8"
+          className="text-lg lg:text-xl text-gray-300 font-mono h-16 max-w-2xl mb-8 mx-2"
           initial="hidden"
           animate="visible"
           custom={1}
@@ -66,7 +66,7 @@ export default function Hero() {
         </motion.p>
 
         {/* Iconos */}
-        <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-10">
+        <div className="flex flex-wrap gap-2 justify-center md:justify-start pt-12">
           {[
             {
               href: "https://github.com/claraDevelope",
