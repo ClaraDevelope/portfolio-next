@@ -63,14 +63,15 @@ export default function AboutMe() {
           {/* Halo decorativo */}
           <div className="hidden md:block absolute inset-0 m-auto w-72 h-72 rounded-full bg-fuchsia-500 opacity-30 blur-3xl -z-10" />
 
-          <div className="relative w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-2 border-white/50 shadow-xl">
-            <Image
-              src="/images/yo-gato.webp"
-              alt="Yo con un gato"
-              fill
-              className="object-cover"
-            />
-          </div>
+ <div className="relative w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-2 border-white/50 shadow-xl noise">
+  <Image
+    src="/images/foto-estudio.png"
+    alt="Foto de estudio"
+    fill
+    className="object-cover"
+  />
+</div>
+
         </motion.div>
       </motion.div>
     </section>

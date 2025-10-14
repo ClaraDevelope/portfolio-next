@@ -39,3 +39,14 @@ body {
 strong{
   color: var(--accent);
 }
+
+.noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  background-size: 200px 200px;
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}

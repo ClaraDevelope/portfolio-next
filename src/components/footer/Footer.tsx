@@ -14,7 +14,7 @@ export default function Footer() {
           <p className="text-s mt-1">
             Portfolio construido con código propio.{' '}
             <a
-              href="https://github.com/tu-usuario"
+              href="https://github.com/ClaraDevelope/portfolio-next"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:text-white"

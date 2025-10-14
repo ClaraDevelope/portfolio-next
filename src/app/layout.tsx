@@ -27,8 +27,8 @@ export const metadata: Metadata = {
   },
 icons: {
   icon: [
-    { url: "/icons/favicon.ico", type: "image/x-icon" },
-    { url: "/icons/icon.webp", type: "image/webp" },
+    { url: "/icons/modern_portfolio.ico", type: "image/x-icon" },
+    { url: "/icons/icono.webp", type: "image/webp" },
   ],
 },
 }
@@ -41,12 +41,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body
         className={`${poppins.variable} font-sans antialiased bg-white text-gray-900`}
       >
-        < Navbar/>
-        <main className="min-h-screen">{children}</main>
-      <Footer/>
+        <Navbar />
+        <main className="min-h-screen" role="main">{children}</main>
+        <Footer />
       </body>
     </html>
   )

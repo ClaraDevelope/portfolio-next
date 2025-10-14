@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { PROJECTS } from '@/utils/projects'
 import ProjectDetailsModal from './ProjectDetailsModal'
 import { ProjectType } from '@/app/types/projectType'
-import { Star, ExternalLink, Github } from 'lucide-react'
+import { Star, ExternalLink, Github, Lock } from 'lucide-react'
 import ProjectImage from './ProjectImage'
 import { motion } from 'framer-motion'
 
@@ -45,6 +45,10 @@ export default function ProjectsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6, ease: 'easeOut', delay: index * 0.15 }}
+                whileHover={{
+                  boxShadow: '0 8px 32px rgba(180, 0, 255, 0.15)',
+                  borderColor: '#d946ef'
+                }}
                 className="relative border border-gray-200 border-gray-700 bg-white/5 backdrop-blur-sm rounded-l overflow-hidden shadow-sm hover:shadow-xl transition flex flex-col"
               >
                 {/* {isFeatured && (
@@ -53,15 +57,40 @@ export default function ProjectsSection() {
                     Destacado
                   </span>
                 )} */}
+                  {(project.repoStatus === 'private' || project.repoStatus === 'wip') && (
+                      <span className="absolute right-3 top-3 z-20 inline-flex items-center gap-1
+                        text-xs px-2 py-1 rounded-full bg-yellow-500/30 border border-yellow-500/35
+                        text-yellow-200 shadow-sm pointer-events-none">
+                         En desarrollo
+                      </span>
+                    )}
 
+                <motion.div
+                className="overflow-hidden rounded-t"
+                whileHover={{
+                  scale: 1.05,
+                  filter: 'brightness(1.1) blur(0.2px)',
+                  boxShadow: '0 8px 32px rgba(180, 0, 255, 0.25)'
+                }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              >
                 <ProjectImage
                   src={project.imgUrl}
                   alt={project.name}
                   title={project.name}
                 />
+                {/* Overlay opcional */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 0.15 }}
+                  style={{ background: 'linear-gradient(135deg, #d946ef 0%, #6366f1 100%)' }}
+                />
+              </motion.div>
 
                 <div className="p-4 flex flex-col h-full flex-1">
                   <div>
+
                     <h4 className="text-[24px] text-gray-100 font-semibold mb-2 relative after:mx-6 after:content-[''] after:block after:w-12 after:h-1 after:bg-gray-100 after:mt-1 after:mb-6 rounded-full">
                       {project.name}
                     </h4>
@@ -83,20 +112,20 @@ export default function ProjectsSection() {
                       {project.technologies?.map((tech, i) => (
                         <div
                           key={i}
-                         className="flex items-center gap-2 bg-gradient-to-r from-white/10 to-white/2 border border-white/10 rounded-full px-3 py-1 text-sm text-gray-100 backdrop-blur-md shadow-inner"
-
-
+                          className="flex items-center gap-2 bg-gradient-to-r from-white/10 to-white/2 border border-white/10 rounded-full px-3 py-1 text-sm text-gray-100 backdrop-blur-md shadow-inner"
                           title={tech.name}
                           aria-label={tech.name}
                         >
-                          <Image
-                            src={tech.img || '/placeholder.webp'}
-                            alt={tech.name}
-                            width={20}
-                            height={20}
-                            className="object-contain"
-                            unoptimized
-                          />
+                          <motion.div whileHover={{ scale: 1.2 }}>
+                            <Image
+                              src={tech.img || '/placeholder.webp'}
+                              alt={tech.name}
+                              width={20}
+                              height={20}
+                              className="object-contain"
+                              unoptimized
+                            />
+                          </motion.div>
                           <span className="whitespace-nowrap">{tech.name}</span>
                         </div>
                       ))}
@@ -126,28 +155,41 @@ export default function ProjectsSection() {
                             <span className="relative z-10">Ver proyecto</span>
                           </Link>
                         )}
-                        {project.gitHub && (
-                          <Link
-                            href={project.gitHub}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group relative inline-flex items-center justify-center gap-2 rounded-l px-4
-                                      text-sm font-semibold text-white overflow-hidden
-                                      bg-gradient-to-r from-slate-800 via-gray-800 to-zinc-800
-                                      hover:from-slate-700 hover:via-gray-700 hover:to-zinc-700
-                                      shadow-lg shadow-black/25 hover:shadow-xl hover:shadow-black/40
-                                      transform-gpu transition-all duration-300 ease-out
-                                      hover:scale-105 hover:-translate-y-0.5
-                                      active:scale-95 active:translate-y-0
-                                      border border-white/20 backdrop-blur-sm w-full
-                                      before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent
-                                      before:translate-x-[-100%] before:skew-x-12 before:transition-transform before:duration-700
-                                      hover:before:translate-x-[200%]"
-                          >
-                            <Github size={16} className="transition-transform duration-300 group-hover:scale-110 relative z-10" />
-                            <span className="relative z-10">GitHub</span>
-                          </Link>
-                        )}
+                        {project.gitHub ? (
+                              <Link
+                                href={project.gitHub}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group relative inline-flex items-center justify-center gap-2 rounded-l px-4
+                                          text-sm font-semibold text-white overflow-hidden
+                                          bg-gradient-to-r from-slate-800 via-gray-800 to-zinc-800
+                                          hover:from-slate-700 hover:via-gray-700 hover:to-zinc-700
+                                          shadow-lg shadow-black/25 hover:shadow-xl hover:shadow-black/40
+                                          transform-gpu transition-all duration-300 ease-out
+                                          hover:scale-105 hover:-translate-y-0.5
+                                          active:scale-95 active:translate-y-0
+                                          border border-white/20 backdrop-blur-sm w-full
+                                          before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent
+                                          before:translate-x-[-100%] before:skew-x-12 before:transition-transform before:duration-700
+                                          hover:before:translate-x-[200%]"
+                              >
+                                <Github size={16} className="transition-transform duration-300 group-hover:scale-110 relative z-10" />
+                                <span className="relative z-10">GitHub</span>
+                              </Link>
+                            ) : (
+                              <button
+                                type="button"
+                                aria-disabled
+                                title="Repositorio privado / pendiente de publicación"
+                                className="group relative inline-flex items-center justify-center gap-2 rounded-l px-4
+                                          text-sm font-semibold text-white/80 overflow-hidden
+                                          bg-gradient-to-r from-slate-800/60 via-gray-800/60 to-zinc-800/60
+                                          cursor-not-allowed opacity-60 border border-white/10 backdrop-blur-sm w-full"
+                              >
+                                <Lock size={16} />
+                                <span>GitHub</span>
+                              </button>
+                            )}
                       </div>
                     </div>
 

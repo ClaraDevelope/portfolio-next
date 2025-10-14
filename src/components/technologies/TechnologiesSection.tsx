@@ -37,7 +37,7 @@ export default function TechnologySection() {
       case 'backend':
         return 'Backend';
       case 'basesDeDatos':
-        return 'Bases de Datos';
+        return 'Bases de Datos y Almacenamiento';
       case 'herramientasDesarrollo':
         return 'Herramientas de Desarrollo';
       case 'seguridad':
@@ -88,7 +88,7 @@ export default function TechnologySection() {
               }}
               className="border border-white/10 rounded-2xl p-6 text-left bg-white/5 backdrop-blur-md transition-all duration-300"
             >
-              <h3 className="text-xl font-semibold capitalize mb-4 text-gray-100">
+              <h3 className="text-xl font-semibold mb-4 text-gray-100">
                 {transformCategoryName(category)}
               </h3>
 
@@ -97,18 +97,27 @@ export default function TechnologySection() {
                   <motion.div
                     key={tech.id}
                     whileHover={{
-                      scale: 1.05,
+                      scale: 1.12,
+                      rotate: 6,
+                      boxShadow: '0 4px 24px rgba(240, 171, 252, 0.25)',
+                      backgroundColor: 'rgba(240,171,252,0.08)'
                     }}
                     transition={{ type: 'spring', stiffness: 300 }}
                     className="flex items-center gap-2 bg-white/10 text-sm px-5 py-2 rounded-full backdrop-blur-sm transition-transform text-white/90 border border-white/10 hover:bg-white/20 hover:shadow-inner"
                   >
-                    <Image
-                      src={tech.img}
-                      alt={tech.name}
-                      width={24}
-                      height={24}
-                      className="object-contain"
-                    />
+                    <motion.div
+                      whileHover={{ scale: 1.25, rotate: 12 }}
+                      transition={{ type: 'spring', stiffness: 400 }}
+                    >
+                      <Image
+                        src={tech.img}
+                        alt={tech.name}
+                        width={24}
+                        height={24}
+                        className="object-contain"
+                        aria-label={tech.name}
+                      />
+                    </motion.div>
                     <span className="pl-1">{tech.name}</span>
                   </motion.div>
                 ))}

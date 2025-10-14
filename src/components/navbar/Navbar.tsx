@@ -29,7 +29,7 @@ export default function Navbar() {
 
   return (
     <header
-      className="fixed top-4 left-1/2 z-50 transform -translate-x-1/2 w-full px-4 md:max-w-[1200px]"
+      className="fixed top-4 left-1/2 z-50 transform -translate-x-1/2 w-full px-4 lg:max-w-[1200px] md:max-w-[1000px]"
       role="banner"
     >
       <motion.nav
