@@ -59,6 +59,7 @@ export const PROJECTS = [
   },
   {
     name: 'MenstruApp',
+    isFeatured: true,
     description:
       'MenstruApp es una aplicación centrada en la salud menstrual que permite registrar ciclos, gestionar síntomas y visualizar predicciones en un calendario inteligente. Incorpora chat en tiempo real mediante Socket.IO, sistema de notificaciones, publicaciones con interacciones y una red de contactos gestionada a través de solicitudes y filtros de búsqueda.',
       imgUrl: '/images/menstruapp.webp',
@@ -100,7 +101,7 @@ export const PROJECTS = [
       { name: 'Vite', img: '/icons/vite.svg' }
     ]
   },
-  {name: 'EcoJourney', description:'EcoJourney es una PWA desarrollada con Next.js para planificar viajes sostenibles. Incluye autenticación con Google mediante NextAuth, cálculo de emisiones de CO₂ según el medio de transporte elegido, creación de rutas personalizadas y un sistema de publicaciones y reseñas. Utiliza HERE Maps, OpenRouteService y Leaflet para la búsqueda de direcciones, generación de rutas y visualización de mapas interactivos.',
+  {name: 'EcoJourney', isFeatured: true, description:'EcoJourney es una PWA desarrollada con Next.js para planificar viajes sostenibles. Incluye autenticación con Google mediante NextAuth, cálculo de emisiones de CO₂ según el medio de transporte elegido, creación de rutas personalizadas y un sistema de publicaciones y reseñas. Utiliza HERE Maps, OpenRouteService y Leaflet para la búsqueda de direcciones, generación de rutas y visualización de mapas interactivos.',
     imgUrl: '/images/ecojourney.webp',
     url: 'https://ecojourney-phi.vercel.app/',
     gitHub: 'https://github.com/ClaraDevelope/ecojourney',

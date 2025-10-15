@@ -10,7 +10,8 @@ export const TECHNOLOGIES = {
     { id: 'react', name: 'React', img: '/icons/react.svg' },
     { id: 'angular', name: 'Angular', img: '/icons/angular.png' },
     { id: 'tailwind', name: 'Tailwind CSS', img: '/icons/tailwind.webp' },
-    { id: 'next', name: 'Next.js', img: '/icons/nextjs.png' }
+    { id: 'next', name: 'Next.js', img: '/icons/nextjs.png' },
+    { id: 'wordpress', name: 'WordPress', img: '/icons/wordpress.png' }
   ],
   backend: [
     { id: 'node', name: 'Node.js', img: '/icons/nodejs.svg' },

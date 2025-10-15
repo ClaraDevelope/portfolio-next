@@ -2,6 +2,7 @@
 import AboutMe from "@/components/about/AboutMe";
 import CertificationsSection from "@/components/certifications/CertificationsSection";
 import ContactSection from "@/components/contact/ContactSection";
+import ExperienceSection from "@/components/experience/page";
 import Hero from "@/components/hero/Hero";
 import ProjectsSection from "@/components/projects/ProjectsSection";
 import TechnologiesSection from "@/components/technologies/TechnologiesSection";
@@ -32,6 +33,7 @@ export default function Page() {
   return (
     <div>
       <Hero />
+      <ExperienceSection/>
       <ProjectsSection />
       <CertificationsSection />
       <TechnologiesSection />
