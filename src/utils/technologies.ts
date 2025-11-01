@@ -2,7 +2,7 @@ export const TECHNOLOGIES = {
   lenguajes: [
     { id: 'js', name: 'JavaScript ES6', img: '/icons/javascript.svg' },
     { id: 'ts', name: 'TypeScript', img: '/icons/typescript.svg' },
-    { id: 'java', name: 'Java', img: '/icons/java3.png' },
+    { id: 'java', name: 'Java', img: '/icons/java4.png' },
   ],
   frontend: [
     { id: 'html', name: 'HTML5', img: '/icons/html.svg' },
@@ -11,7 +11,7 @@ export const TECHNOLOGIES = {
     { id: 'angular', name: 'Angular', img: '/icons/angular.png' },
     { id: 'tailwind', name: 'Tailwind CSS', img: '/icons/tailwind.webp' },
     { id: 'next', name: 'Next.js', img: '/icons/nextjs.png' },
-    { id: 'wordpress', name: 'WordPress', img: '/icons/wordpress.png' }
+    { id: 'wordpress', name: 'WordPress', img: '/icons/wordpress2.png' }
   ],
   backend: [
     { id: 'node', name: 'Node.js', img: '/icons/nodejs.svg' },
@@ -27,6 +27,7 @@ export const TECHNOLOGIES = {
   herramientasDesarrollo: [
     { id: 'git', name: 'Git', img: '/icons/git.svg' },
     { id: 'jest', name: 'Jest', img: '/icons/jest.webp' },
+    {id: 'JUnit', name: 'JUnit', img: '/icons/junit.png' },
     { id: 'insomnia', name: 'Insomnia', img: '/icons/insomnia.svg' },
     { id: 'vite', name: 'Vite', img: '/icons/vite.svg' },
     { id: 'webpack', name: 'Webpack', img: '/icons/Webpack.png' }

@@ -40,7 +40,7 @@ export default function Footer() {
               className="opacity-70 hover:opacity-100 transition-all-duration-300"
             />
           </a>
-          <span>2025</span>
+          <span>{new Date().getFullYear()}</span>
         </div>
 
         <div className="text-s flex flex-col gap-1">

@@ -8,7 +8,7 @@ export default function AboutMe() {
   return (
     <section
       id="perfil"
-      className="py-20 px-4 max-w-[1300px] mx-auto text-white"
+      className="py-20 px-4 max-w-[1200px] mx-auto text-white"
     >
       <motion.h2
         initial={{ opacity: 0, y: 30 }}

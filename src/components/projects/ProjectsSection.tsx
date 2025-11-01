@@ -10,13 +10,13 @@ import { ExternalLink, Github, Lock } from 'lucide-react'
 import ProjectImage from './ProjectImage'
 import { motion } from 'framer-motion'
 
-/** Extensión local sin tocar tu ProjectType global */
+
 type RepoStatus = 'public' | 'private' | 'wip'
 type LocalProject = ProjectType & {
   isFeatured?: boolean
   repoStatus?: RepoStatus
   imgUrl?: string
-  name: string // nos aseguramos de tener name como string
+  name: string 
 }
 
 /** Conversión tipada una sola vez (evitamos any por todo el archivo) */
@@ -72,21 +72,20 @@ export default function ProjectsSection() {
           <div className="flex justify-center pt-2">
             <button
               onClick={() => setShowAll(v => !v)}
-              className="group relative inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3
-                         text-sm font-semibold text-white overflow-hidden
-                         bg-gradient-to-r from-violet-600 via-purple-600 to-blue-600
-                         hover:from-violet-500 hover:via-purple-500 hover:to-blue-500
-                         shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/40
-                         transform-gpu transition-all duration-300 ease-out
-                         hover:scale-105 hover:-translate-y-0.5 active:scale-95 active:translate-y-0
-                         border border-white/10 backdrop-blur-sm
-                         before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent
-                         before:translate-x-[-100%] before:skew-x-12 before:transition-transform before:duration-700
-                         hover:before:translate-x-[200%]"
+              className="inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5
+                        text-sm font-medium text-white/80
+                        bg-white/10 hover:bg-white/20
+                        border border-white/10
+                        backdrop-blur-sm
+                        transition-all duration-300 ease-out
+                        hover:text-white hover:-translate-y-0.5 active:translate-y-0
+                        focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
               aria-expanded={showAll}
             >
-              {showAll ? 'Ocultar proyectos' : 'Ver todos los proyectos'}
+              {showAll ? 'Ver menos proyectos' : 'Ver todos los proyectos'}
             </button>
+
+
           </div>
         )}
 

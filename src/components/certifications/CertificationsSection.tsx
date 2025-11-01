@@ -11,7 +11,7 @@ export default function CertificationsSection() {
   const containList = ['Introducción a la Ingeniería de Software']
 
   return (
-    <section id="formacion" className="py-20 max-w-[1300px] mx-auto px-4">
+    <section id="formacion" className="py-20 max-w-[1200px] mx-auto px-4">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-white tracking-wide relative after:content-[''] after:block after:w-12 after:h-1 after:mx-auto after:bg-fuchsia-500 after:mt-2 rounded-full">
           Formación

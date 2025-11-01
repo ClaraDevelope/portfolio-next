@@ -52,7 +52,7 @@ export default function TechnologySection() {
   return (
     <section
       id="tecnologias"
-      className="relative w-full min-h-screen px-6 py-20 overflow-hidden"
+      className="relative w-full max-w-[1200px] min-h-screen px-6 py-20 overflow-hidden m-auto"
     >
       <div
         ref={ref}
@@ -86,7 +86,7 @@ export default function TechnologySection() {
                 boxShadow: '0 0 15px rgba(255, 0, 200, 0.2)',
                 borderColor: '#f0abfc',
               }}
-              className="border border-white/10 rounded-2xl p-6 text-left bg-white/5 backdrop-blur-md transition-all duration-300"
+              className="border border-white/10 rounded-lg p-6 text-left bg-white/5 backdrop-blur-md transition-all duration-300"
             >
               <h3 className="text-xl font-semibold mb-4 text-gray-100">
                 {transformCategoryName(category)}

@@ -5,6 +5,11 @@ export const CERTIFICATIONS = [
     url: "https://verified.sertifier.com/es/verify/56660557762984/",
   },
   {
+    name: "Programación en Java",
+    img: "/images/certificado-java.jpg",
+    url: "https://www.docdroid.com/2sTu7Pm/diploma-clara-manzano-corona-signed-pdf"
+  },
+  {
     name: "Introducción a la Ingeniería de Software",
     img: "/images/UAM.webp",
     url: "https://courses.edx.org/certificates/9e839c780889498db42a5d340f59aada",
