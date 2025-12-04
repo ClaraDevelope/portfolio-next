@@ -3,11 +3,8 @@
 import { CERTIFICATIONS } from '@/utils/certifications'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useState } from 'react'
 
 export default function CertificationsSection() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-
   const containList = ['Introducción a la Ingeniería de Software']
 
   return (
@@ -25,39 +22,47 @@ export default function CertificationsSection() {
             href={cert.url}
             target="_blank"
             rel="noopener noreferrer"
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
-            initial={{ opacity: 0, y: 30 }}
+            aria-label={`Ver certificado: ${cert.name}`}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, ease: 'easeOut', delay: index * 0.1 }}
-            whileHover={{ 
-              scale: 1.04,
-              boxShadow: '0 0 20px rgba(240, 171, 252, 0.3)'
-            }}
-            whileTap={{ scale: 0.98 }}
-            className={`relative block overflow-hidden rounded-l border border-white/10 shadow-md transition-all duration-300 bg-white/5 ${
-              hoveredIndex !== null && hoveredIndex !== index
-                ? 'opacity-40 brightness-55'
-                : 'opacity-100'
-            }`}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.06 }}
+            whileHover={{ y: -4 }}
+            whileTap={{ scale: 0.97 }}
+            className="
+              group relative flex flex-col overflow-hidden
+              rounded-md border border-white/8
+              bg-white/0
+              transition-all duration-300
+              hover:border-[var(--accent)]/45 hover:bg-white/5
+              focus-visible:outline-none focus-visible:ring-2
+              focus-visible:ring-white/80 focus-visible:ring-offset-2
+              focus-visible:ring-offset-[#060013]
+            "
           >
-            <div className="relative w-full h-48 sm:h-52 md:h-56">
+            <div className="relative w-full h-40 sm:h-44 md:h-48 overflow-hidden">
               <Image
                 src={cert.img}
                 alt={cert.name}
                 fill
-                className={`transition duration-300 bg-white ${
-                  containList.includes(cert.name)
-                    ? 'object-contain'
-                    : 'object-cover'
-                }`}
+                className={`
+                  bg-white
+                  transition-transform duration-500
+                  ${containList.includes(cert.name) ? 'object-contain p-4' : 'object-cover'}
+                  group-hover:scale-[1.03]
+                `}
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
-              <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold px-2 py-1 bg-black/80 rounded shadow backdrop-blur-sm">
+
+              {/* velo muy sutil para dar legibilidad al texto */}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent" />
+            </div>
+
+            {/* texto debajo, limpio, sin caja negra */}
+            <div className="px-4 py-3">
+              <p className="text-sm font-medium text-white/90 leading-snug">
                 {cert.name}
-              </div>
+              </p>
             </div>
           </motion.a>
         ))}

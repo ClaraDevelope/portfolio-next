@@ -18,14 +18,14 @@ export default function TechnologySection() {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.15,
       },
     },
   };
 
   const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 50, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1 },
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0 },
   };
 
   const transformCategoryName = (name: string) => {
@@ -40,6 +40,10 @@ export default function TechnologySection() {
         return 'Bases de Datos y Almacenamiento';
       case 'herramientasDesarrollo':
         return 'Herramientas de Desarrollo';
+      case 'iaAutomatizacion':
+        return 'IA y Automatización';
+      case 'infraestructura':
+        return 'Infraestructura';
       case 'seguridad':
         return 'Seguridad';
       case 'diseño':
@@ -72,7 +76,7 @@ export default function TechnologySection() {
         </motion.h2>
 
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           variants={containerVariants}
           initial="hidden"
           animate={controls}
@@ -81,44 +85,40 @@ export default function TechnologySection() {
             <motion.div
               key={category}
               variants={cardVariants}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-              whileHover={{
-                boxShadow: '0 0 15px rgba(255, 0, 200, 0.2)',
-                borderColor: '#f0abfc',
-              }}
-              className="border border-white/10 rounded-lg p-6 text-left bg-white/5 backdrop-blur-md transition-all duration-300"
+              transition={{ duration: 0.45, ease: 'easeOut' }}
+              className="group relative rounded-md border border-white/8 bg-white/0
+                         px-5 py-5 text-left
+                         hover:border-[var(--accent)]/40 hover:bg-white/5
+                         transition-colors duration-300"
             >
-              <h3 className="text-xl font-semibold mb-4 text-gray-100">
-                {transformCategoryName(category)}
-              </h3>
+                  <div className="mb-4">
+                    <h3 className="text-sm font-medium tracking-[0.18em] uppercase text-white/60">
+                      {transformCategoryName(category)}
+                    </h3>
+                  </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2.5">
                 {items.map((tech) => (
                   <motion.div
                     key={tech.id}
-                    whileHover={{
-                      scale: 1.12,
-                      rotate: 6,
-                      boxShadow: '0 4px 24px rgba(240, 171, 252, 0.25)',
-                      backgroundColor: 'rgba(240,171,252,0.08)'
-                    }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                    className="flex items-center gap-2 bg-white/10 text-sm px-5 py-2 rounded-full backdrop-blur-sm transition-transform text-white/90 border border-white/10 hover:bg-white/20 hover:shadow-inner"
+                    whileHover={{ scale: 1.04 }}
+                    transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+                    className="inline-flex items-center gap-2 rounded-full
+                               border border-white/10 bg-white/5/0
+                               px-3 py-1.5 text-xs text-white/85
+                               hover:bg-white/8 hover:border-white/30
+                               transition-colors duration-200"
                   >
-                    <motion.div
-                      whileHover={{ scale: 1.25, rotate: 12 }}
-                      transition={{ type: 'spring', stiffness: 400 }}
-                    >
+                    {tech.img && (
                       <Image
                         src={tech.img}
                         alt={tech.name}
-                        width={24}
-                        height={24}
+                        width={18}
+                        height={18}
                         className="object-contain"
-                        aria-label={tech.name}
                       />
-                    </motion.div>
-                    <span className="pl-1">{tech.name}</span>
+                    )}
+                    <span className="whitespace-nowrap">{tech.name}</span>
                   </motion.div>
                 ))}
               </div>
