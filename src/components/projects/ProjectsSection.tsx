@@ -147,7 +147,7 @@ function ProjectRow({ project, index }: { project: LocalProject; index: number }
         {/* panel expandido: imagen + descripción + enlaces */}
         <div
           className={`relative z-10 overflow-hidden transition-all duration-700 ease-out ${
-            isHovered ? 'max-h-[420px] opacity-100 mt-8' : 'max-h-0 opacity-0 mt-0'
+            isHovered ? 'max-h-[520px] opacity-100 mt-8' : 'max-h-0 opacity-0 mt-0'
           }`}
         >
           <div className="grid md:grid-cols-2 gap-8 items-start">
