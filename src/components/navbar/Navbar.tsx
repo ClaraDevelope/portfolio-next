@@ -19,10 +19,10 @@ const navItems: NavItem[] = [
   {
     label: "Perfil",
     href: "#perfil",
-    children: [
-      { label: "Sobre mí", href: "#perfil" },
-      { label: "Vídeos", href: "#videos" },
-    ],
+    // children: [
+    //   { label: "Sobre mí", href: "#perfil" },
+    //   { label: "Vídeos", href: "#videos" },
+    // ],
   },
   { label: "¿Hablamos?", href: "#contacto" },
 ]
