@@ -6,7 +6,7 @@ import ExperienceSection from "@/components/experience/page";
 import Hero from "@/components/hero/Hero";
 import ProjectsSection from "@/components/projects/ProjectsSection";
 import TechnologiesSection from "@/components/technologies/TechnologiesSection";
-import YouTubeSection from "@/components/youtube/YouTubeSection";
+// import YouTubeSection from "@/components/youtube/YouTubeSection";
 import { useEffect } from "react";
 
 export default function Page() {
@@ -39,7 +39,7 @@ export default function Page() {
       <CertificationsSection />
       <TechnologiesSection />
       <AboutMe />
-      <YouTubeSection/>
+      {/* <YouTubeSection/> */}
       <ContactSection />
     </div>
   );
