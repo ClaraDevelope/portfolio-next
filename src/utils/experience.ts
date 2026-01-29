@@ -3,7 +3,8 @@ export const EXPERIENCE = [
   id: 'ingenalia',
   title: 'Ingenalia Telecom',
   subtitle: 'Desarrolladora Full-Stack Junior (2025–actualidad)',
-  description: `Desarrollo y mantengo las aplicaciones internas críticas de la empresa, abarcando Frontend, Backend y Automatización. Mi trabajo se enfoca en la estabilización de flujos de trabajo clave (incluyendo optimización de código y generación documental) y la integración de mejoras en la calidad del dato y la UI. Contribuyo a la fiabilidad operativa bajo estrictos requisitos técnicos y regulatorios.`,
+  description: 'Desarrollo y mantengo aplicaciones internas críticas, trabajando principalmente en backend, frontend y automatización. Mi trabajo se centra en el diseño y estabilización de flujos técnicos complejos, incluyendo la ingestión y validación de datos externos, la integración entre múltiples sistemas y la automatización de procesos sensibles al dato.Participo en la creación y mantenimiento de microservicios que permiten importar, reconciliar y enriquecer información desde fuentes externas, garantizando la calidad del dato antes de su impacto en el sistema principal. Trabajo con especial atención a la trazabilidad, el control de errores y la fiabilidad operativa en entornos con requisitos técnicos y regulatorios estrictos.',
+  // description: `Desarrollo y mantengo las aplicaciones internas críticas de la empresa, abarcando Frontend, Backend y Automatización. Mi trabajo se enfoca en la estabilización de flujos de trabajo clave (incluyendo optimización de código y generación documental) y la integración de mejoras en la calidad del dato y la UI. Contribuyo a la fiabilidad operativa bajo estrictos requisitos técnicos y regulatorios.`,
   role: 'Desarrolladora Full-Stack Junior',
   stack: [
   'Next.js',
