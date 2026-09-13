@@ -14,7 +14,7 @@ import ContactClosing from "@/components/redesign/contacto/ContactClosing"
  * conductor descansa sobre la tarjeta protagonista y la de cierre.
  */
 export const metadata: Metadata = {
-  title: "Contacto | Portfolio Clara Manzano Corona",
+  title: "Contacto | Clara Manzano Corona",
   description:
     "Escribe a Clara Manzano Corona por email o encuéntrala en LinkedIn. Valladolid.",
 }

@@ -25,7 +25,7 @@ import NavStrip from "@/components/redesign/NavStrip"
  * basado en evidencia real, anonimizado.
  */
 export const metadata: Metadata = {
-  title: "Trabajo | Portfolio Clara Manzano Corona",
+  title: "Trabajo | Clara Manzano Corona",
   description:
     "Proyectos desarrollados desde cero y evolución de aplicaciones internas: automatización, integración de sistemas, calidad de datos y cartografía aplicada.",
 }

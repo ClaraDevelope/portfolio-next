@@ -80,7 +80,7 @@ export default function SceneIntro() {
                 ·
               </span>
               <a
-                href="/CV_Clara_Manzano_Corona.pdf"
+                href="/CV_Clara_Manzano.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex items-center gap-space-sm font-sans text-caption uppercase tracking-wider text-rich-ink transition-colors duration-200 hover:text-flame-orange-deep focus:outline-none focus-visible:ring-2 focus-visible:ring-flame-orange rounded-sm"

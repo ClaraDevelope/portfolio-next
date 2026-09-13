@@ -19,7 +19,7 @@ import NavStrip from "@/components/redesign/NavStrip"
  * de navegación.
  */
 export const metadata: Metadata = {
-  title: "Perfil | Portfolio Clara Manzano Corona",
+  title: "Perfil | Clara Manzano Corona",
   description:
     "Trayectoria de Clara Manzano Corona: de la Educación Social a la ingeniería de software, pasando por la gestión cooperativa y la formación en programación.",
 }

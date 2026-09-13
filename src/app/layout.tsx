@@ -19,7 +19,7 @@ const jakarta = Plus_Jakarta_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "Portfolio Clara Manzano Corona",
+  title: "Clara Manzano Corona — Desarrollo de software e IA aplicada",
   description: "Desarrolladora web con enfoque en accesibilidad, experiencia de usuario y sostenibilidad digital",
   keywords: ["Clara Manzano", "portfolio", "desarrolladora web", "frontend", "fullstack", "Next.js", "JavaScript", "React", "Node.js", "sostenibilidad digital", "UX", "UI", "accesibilidad", "Tailwind CSS", "CSS", "HTML", "JavaScript", "TypeScript", "MongoDB", "Git", "GitHub", "desarrollo web", "programación", "tecnología"],
   authors: [{ name: "Clara Manzano Corona", url: "https://claramanzanocorona.dev" }],

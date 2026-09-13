@@ -96,7 +96,7 @@ export default function Hero() {
   {[
     { href:"https://github.com/claraDevelope", label:"GitHub", icon:<Github size={18}/> },
     { href:"https://linkedin.com/in/clara-manzano-corona", label:"LinkedIn", icon:<Linkedin size={18}/> },
-    { href:"/CV_Clara_Manzano_Corona.pdf", label:"Descargar CV", target:"_blank", icon:<Download size={18}/>, download:false, highlight:true },
+    { href:"/CV_Clara_Manzano.pdf", label:"Descargar CV", target:"_blank", icon:<Download size={18}/>, download:false, highlight:true },
   ].map((item,i)=>(
     <motion.a
       key={item.label}
