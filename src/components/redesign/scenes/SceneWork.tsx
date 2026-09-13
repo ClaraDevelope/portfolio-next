@@ -31,10 +31,18 @@ import { usePrefersReducedMotion } from "../usePrefersReducedMotion"
  *     estructura.». Al soltar el sticky, la escena 03 entra en su posición
  *     normal, sin salto visual ni espacio vacío.
  *
- * - Las dos frases jamás se solapan (ventanas de scroll disjuntas).
- * - Escritorio: reacción mínima de la textura al cursor; el texto se
- *   mueve únicamente con el scroll.
- * - Móvil: coreografía simplificada, escalas ajustadas, sticky más corto.
+ * - Las dos frases jamás se solapan (ventanas del timeline disjuntas).
+ * - Escritorio (≥ 1024px, sección de 560vh): máquina de estados discreta
+ *   para la secuencia — entrada → frase 1 fija → frase 2 fija → salida.
+ *   Un gesto de scroll completo avanza (o retrocede) exactamente un estado
+ *   sea cual sea su magnitud; cada transición se ejecuta completa en
+ *   ~500 ms (sin detenerse en fotogramas intermedios) y solo estaciona en
+ *   frases completas, centradas y legibles, con un mínimo de 1,5 s antes
+ *   de aceptar el siguiente gesto (sin avance automático al dejar de
+ *   hacer scroll). El estado SALIDA no estaciona: entrega la escena a la
+ *   03 en cuanto completa la transformación final.
+ * - Escritorio: reacción mínima de la textura al cursor.
+ * - Móvil (< 1024px): comportamiento continuo anterior, sin cambios.
  * - prefers-reduced-motion: los tres momentos textuales en secuencia
  *   estática y legible, sin sticky ni bloqueo.
  *
@@ -57,17 +65,19 @@ const CAUSTIC_B =
 
 /**
  * Palabras del título con su deriva propia (momento 2): desplazamiento en %
- * del escenario, rotación y escala, con ventanas escalonadas — cada palabra
- * viaja a su velocidad; las de los extremos quedan recortadas por el borde.
+ * del escenario, rotación y escala. El desfase (`off`) y la duración (`dur`)
+ * se combinan con el inicio de la deriva del timeline activo, de modo que la
+ * coreografía puede desplazarse en el tiempo sin cambiar las relaciones entre
+ * palabras; las de los extremos quedan recortadas por el borde.
  */
 const TITLE_WORDS = [
-  { text: "La", italic: false, dx: -6, dy: -8, rot: -2, sc: 1.06, w: [0.1, 0.3] },
-  { text: "técnica", italic: false, dx: -32, dy: 4, rot: -9, sc: 1.18, w: [0.12, 0.34] },
-  { text: "como", italic: false, dx: -4, dy: 9, rot: -2, sc: 1.04, w: [0.08, 0.28] },
-  { text: "artesanía", italic: true, dx: 9, dy: -15, rot: 4, sc: 1.12, w: [0.11, 0.33] },
-  { text: "de", italic: true, dx: 4, dy: -5, rot: 2, sc: 1.05, w: [0.09, 0.29] },
-  { text: "lo", italic: true, dx: -3, dy: 6, rot: -1, sc: 1.03, w: [0.07, 0.27] },
-  { text: "invisible.", italic: true, dx: 34, dy: 16, rot: 8, sc: 1.22, w: [0.13, 0.36] },
+  { text: "La", italic: false, dx: -6, dy: -8, rot: -2, sc: 1.06, off: 0.03, dur: 0.2 },
+  { text: "técnica", italic: false, dx: -32, dy: 4, rot: -9, sc: 1.18, off: 0.05, dur: 0.22 },
+  { text: "como", italic: false, dx: -4, dy: 9, rot: -2, sc: 1.04, off: 0.01, dur: 0.2 },
+  { text: "artesanía", italic: true, dx: 9, dy: -15, rot: 4, sc: 1.12, off: 0.04, dur: 0.22 },
+  { text: "de", italic: true, dx: 4, dy: -5, rot: 2, sc: 1.05, off: 0.02, dur: 0.2 },
+  { text: "lo", italic: true, dx: -3, dy: 6, rot: -1, sc: 1.03, off: 0, dur: 0.2 },
+  { text: "invisible.", italic: true, dx: 34, dy: 16, rot: 8, sc: 1.22, off: 0.06, dur: 0.23 },
 ] as const
 
 const PHRASE_1 = ["El", "trabajo", "no", "empieza", "en", "la", "pantalla."] as const
@@ -89,6 +99,136 @@ const smoothstep = (t: number) => {
 }
 
 const ramp = (p: number, a: number, b: number) => smoothstep((p - a) / (b - a))
+
+/**
+ * Duración de cada transición de la máquina de estados (escritorio): se
+ * ejecuta completa de forma automática (~500 ms, rango 400–600), sin
+ * detenerse en fotogramas intermedios: escalados, desplazamientos y
+ * textos recortados solo existen durante la transición, nunca como estado.
+ */
+const TRANSITION_MS = 500
+
+/**
+ * Máquina de estados discreta de la secuencia (escritorio):
+ * entrada → frase 1 fija → frase 2 fija → salida.
+ *
+ *  - Un gesto de scroll completo (rueda, trackpad) avanza o retrocede
+ *    exactamente UN estado, sea cual sea la magnitud del delta: al
+ *    aceptarse, la posición del scroll se re-ancla suavemente al centro de
+ *    la zona del nuevo estado (un delta enorme no puede salir de la
+ *    secuencia ni liberar el sticky por adelantado).
+ *  - Cada transición se ejecuta completa en ~500 ms y solo se detiene en
+ *    un estado estable: frase completa, centrada y legible (nunca en
+ *    escalados, desplazamientos o textos recortados a medias).
+ *  - Cada frase permanece fija hasta recibir un nuevo gesto (mínimo 1,5 s
+ *    desde que la frase está completa): al dejar de hacer scroll no hay
+ *    avance automático. Los gestos recibidos durante el bloqueo o durante
+ *    una transición en curso se descartan (la transición no se interrumpe).
+ *  - El estado SALIDA no estaciona la composición: ejecuta de corrido la
+ *    transformación final y entrega la escena a la 03.
+ */
+const STATE_TARGETS = [0.1, 0.52, 0.83, 1] as const // entrada · frase 1 · frase 2 · salida
+const STATE_ANCHORS = [0.125, 0.375, 0.625, 0.875] as const // centro de la zona de scroll de cada estado
+const STATE_COUNT = STATE_TARGETS.length
+const SALIDA_IDX = STATE_COUNT - 1
+const STATE_LOCK = 1500 // ms mínimos de frase completa antes de aceptar un gesto
+const GESTURE_IDLE = 250 // ms sin movimiento para dar el gesto por terminado
+const GESTURE_MIN = 8 // px netos mínimos para considerar gesto
+const ANCHOR_SUPPRESS = 900 // ms que el scroll programático de re-anclaje no cuenta como gesto
+
+/**
+ * Timelines de la coreografía. El ritmo no depende de animaciones sino de
+ * la altura de la sección (viewport sticky) y del reparto de los rangos de
+ * progreso: sin interceptar la rueda ni cancelar eventos de scroll.
+ *
+ * - TL_CURRENT (< 1024px): comportamiento previo, sin cambios (progreso
+ *   bruto del scroll, sin suavizar).
+ * - TL_DESKTOP (≥ 1024px, sección de 560vh): cada estado sigue el patrón
+ *   entrada → pausa de lectura (todo en reposo) → salida progresiva. Título
+ *   quieto (≈0.08–0.13, objetivo del estado ENTRADA: 0.10), frase 1
+ *   (entrada 0.36–0.48, pausa 0.48–0.56, objetivo FRASE 1: 0.52, salida
+ *   0.56–0.66), frase 2 (entrada 0.68–0.78, pausa 0.78–0.88, objetivo
+ *   FRASE 2: 0.83, salida 0.88–0.94), transformación final 0.88–0.96 y
+ *   pausa de la composición 0.96–1 (objetivo SALIDA: 1) antes de la salida
+ *   gradual hacia la escena 03 durante la liberación del sticky.
+ */
+type Timeline = {
+  kickerIn: readonly [number, number]
+  kickerOut: readonly [number, number]
+  titleIn: { base: number; per: number; span: number }
+  titleScale: readonly [number, number]
+  driftStart: number
+  driftDur: number
+  titleOut: readonly [number, number]
+  p1Scale: readonly [number, number]
+  p1In: { base: number; per: number; span: number }
+  p1Out: { base: number; per: number; span: number }
+  p2In: { base: number; per: number; span: number }
+  p2Out: readonly [number, number]
+  focusIn: readonly [number, number]
+  grow: readonly [number, number]
+  fade: readonly [number, number]
+  veil: readonly [number, number]
+  bloomIn: readonly [number, number]
+  bloomOut: readonly [number, number]
+  causticAIn: readonly [number, number]
+  causticAOut: readonly [number, number]
+  causticBIn: readonly [number, number]
+  causticBOut: readonly [number, number]
+  grainIn: readonly [number, number]
+}
+
+const TL_CURRENT: Timeline = {
+  kickerIn: [0, 0.07],
+  kickerOut: [0.1, 0.2],
+  titleIn: { base: 0.004, per: 0.007, span: 0.08 },
+  titleScale: [0.14, 0.34],
+  driftStart: 0.07,
+  driftDur: 1,
+  titleOut: [0.3, 0.42],
+  p1Scale: [0.34, 0.46],
+  p1In: { base: 0.34, per: 0.013, span: 0.09 },
+  p1Out: { base: 0.56, per: 0.008, span: 0.08 },
+  p2In: { base: 0.68, per: 0.008, span: 0.08 },
+  p2Out: [0.83, 0.9],
+  focusIn: [0.71, 0.8],
+  grow: [0.82, 1],
+  fade: [1.04, 1.2],
+  veil: [0.84, 1],
+  bloomIn: [0.1, 0.45],
+  bloomOut: [0.8, 0.96],
+  causticAIn: [0.15, 0.55],
+  causticAOut: [0.82, 0.95],
+  causticBIn: [0.3, 0.7],
+  causticBOut: [0.84, 0.96],
+  grainIn: [0.05, 0.5],
+}
+
+const TL_DESKTOP: Timeline = {
+  kickerIn: [0, 0.04],
+  kickerOut: [0.13, 0.21],
+  titleIn: { base: 0.004, per: 0.005, span: 0.04 },
+  titleScale: [0.13, 0.29],
+  driftStart: 0.13,
+  driftDur: 0.75,
+  titleOut: [0.3, 0.38],
+  p1Scale: [0.36, 0.48],
+  p1In: { base: 0.36, per: 0.009, span: 0.07 },
+  p1Out: { base: 0.56, per: 0.006, span: 0.06 },
+  p2In: { base: 0.68, per: 0.008, span: 0.06 },
+  p2Out: [0.88, 0.92],
+  focusIn: [0.7, 0.78],
+  grow: [0.88, 0.96],
+  fade: [1.02, 1.3],
+  veil: [0.88, 0.96],
+  bloomIn: [0.13, 0.45],
+  bloomOut: [0.86, 0.97],
+  causticAIn: [0.16, 0.55],
+  causticAOut: [0.87, 0.97],
+  causticBIn: [0.28, 0.62],
+  causticBOut: [0.88, 0.97],
+  grainIn: [0.05, 0.5],
+}
 
 /* ------------------------------ Texturas ------------------------------ */
 
@@ -175,41 +315,173 @@ export default function SceneWork() {
       section.addEventListener("pointermove", onPointerMove, { passive: true })
     }
 
+    // Máquina de estados discreta (escritorio): persiste entre frames.
+    let display = 0
+    let stateIdx = 0
+    let lockUntil = 0
+    let inRange = false
+    let lastScrollY = window.scrollY
+    let gestureActive = false
+    let gestureStartY = lastScrollY
+    let gestureLastMove = 0
+    let suppressUntil = 0
+    let tweenFrom = 0
+    let tweenStart = 0
+    let transitionUntil = 0
+    let exitRun = false
+
     const update = () => {
+      const now = performance.now()
+
       const rect = section.getBoundingClientRect()
       const vh = window.innerHeight
-      // Fuera de pantalla: nada que recalcular este frame.
-      if (rect.bottom < -80 || rect.top > vh + 80) return
-
       const total = Math.max(1, rect.height - vh)
       // Progreso extendido: durante la liberación del sticky (pe > 1) la
       // palabra puente termina de disolverse mientras llega la escena 03.
       const pe = -rect.top / total
-      const p = clamp01(pe)
+      const rawP = clamp01(pe)
+
       const W = stage.clientWidth
       const H = stage.clientHeight
+      const desktop = W >= 1024
+
+      // Fuera de pantalla: sincronizar progreso y gestos (nada pinta).
+      if (rect.bottom < -80 || rect.top > vh + 80) {
+        // Anti-escape: un delta enorme que salte la sección entera de un
+        // solo golpe no abandona la secuencia por la fuerza; se vuelve a la
+        // zona del estado vigente (salvo en la salida, que es legítima).
+        if (inRange && rect.bottom < -80 && stateIdx < SALIDA_IDX && !exitRun) {
+          const anchorY = rect.top + window.scrollY + STATE_ANCHORS[stateIdx] * total
+          window.scrollTo({ top: anchorY, behavior: "instant" })
+          gestureActive = false
+          lastScrollY = anchorY
+          return
+        }
+        display = rawP
+        inRange = false
+        gestureActive = false
+        exitRun = false
+        lastScrollY = window.scrollY
+        return
+      }
+
+      // (Re)entrada en la escena: el gesto que la trajo no cuenta; hay
+      // bloqueo inicial y la entrada del título es una transición completa.
+      if (!inRange) {
+        inRange = true
+        gestureActive = false
+        exitRun = false
+        lastScrollY = window.scrollY
+        lockUntil = now + STATE_LOCK
+        tweenFrom = display
+        tweenStart = now
+        transitionUntil = now + TRANSITION_MS
+      }
+
+      let p: number
+      if (desktop) {
+        // --- Máquina de estados: un gesto = una transición completa ---
+        // Un gesto comienza con el movimiento del scroll y termina tras
+        // GESTURE_IDLE ms quieto. Se acepta solo si el bloqueo ha expirado
+        // Y no hay transición en curso; avanza o retrocede exactamente un
+        // estado (cualquiera que sea el delta) y lanza el tween completo.
+        const y = window.scrollY
+        if (now < suppressUntil) {
+          // Scroll programático de re-anclaje: no cuenta como gesto.
+          gestureActive = false
+          lastScrollY = y
+        } else if (Math.abs(y - lastScrollY) > 0.5) {
+          if (!gestureActive) {
+            gestureActive = true
+            gestureStartY = lastScrollY
+          }
+          gestureLastMove = now
+        } else if (gestureActive && now - gestureLastMove > GESTURE_IDLE) {
+          gestureActive = false
+          const net = y - gestureStartY
+          if (Math.abs(net) > GESTURE_MIN) {
+            const busy = now < transitionUntil || now < lockUntil
+            let changed = false
+            if (!busy) {
+              const next = Math.max(0, Math.min(STATE_COUNT - 1, stateIdx + (net > 0 ? 1 : -1)))
+              if (next !== stateIdx) {
+                stateIdx = next
+                // La transición se ejecuta completa en ~TRANSITION_MS y el
+                // bloqueo cubre la transición + 1,5 s con la frase completa.
+                tweenFrom = display
+                tweenStart = now
+                transitionUntil = now + TRANSITION_MS
+                lockUntil = transitionUntil + STATE_LOCK
+                if (stateIdx === SALIDA_IDX) exitRun = true
+                changed = true
+              }
+            }
+            // Re-anclaje en todo gesto completado —aceptado o descartado—
+            // salvo durante la liberación física: la posición vuelve a la
+            // zona del estado vigente, de modo que ni un delta enorme ni
+            // una ráfaga de gestos descartados pueden sacar la escena del
+            // sticky ni estacionarla fuera de zona.
+            if (changed || pe < 1) {
+              const anchorY = rect.top + y + STATE_ANCHORS[stateIdx] * total
+              if (Math.abs(anchorY - y) > 4) {
+                window.scrollTo({ top: anchorY, behavior: "smooth" })
+                suppressUntil = now + ANCHOR_SUPPRESS
+                gestureActive = false
+              }
+            }
+          }
+        }
+        lastScrollY = y
+
+        // --- Progreso visual: tween completo por transición ---
+        // Nunca se detiene a mitad: cada gesto recorre íntegramente las
+        // fases internas del timeline hasta el objetivo del estado (frase
+        // completa, centrada y legible). Entre transiciones, quieto.
+        const u = clamp01((now - tweenStart) / TRANSITION_MS)
+        const eased = u * u * (3 - 2 * u)
+        const target = STATE_TARGETS[stateIdx]
+        if (u < 1) {
+          display = clamp01(tweenFrom + (target - tweenFrom) * eased)
+        } else {
+          display = target
+        }
+        // SALIDA no estaciona: al completar la transformación final,
+        // entrega la escena a la 03 (scroll físico hacia la liberación).
+        if (exitRun && u >= 1 && pe < 1) {
+          exitRun = false
+          const sectionBottom = rect.bottom + window.scrollY
+          const exitY = sectionBottom - vh * 0.6
+          window.scrollTo({ top: exitY, behavior: "smooth" })
+          suppressUntil = now + ANCHOR_SUPPRESS
+          gestureActive = false
+        }
+        p = display
+      } else {
+        p = rawP
+      }
+      const T = desktop ? TL_DESKTOP : TL_CURRENT
 
       // Interpolación suave del cursor (solo textura, muy sutil).
       cursor.x += (cursor.tx - cursor.x) * 0.05
       cursor.y += (cursor.ty - cursor.y) * 0.05
 
       /* --- Momento 1 y 2: rótulo y título --- */
-      const kickerIn = ramp(p, 0, 0.07)
+      const kickerIn = ramp(p, T.kickerIn[0], T.kickerIn[1])
       const kicker = kickerRef.current
       if (kicker) {
-        kicker.style.opacity = (kickerIn * (1 - ramp(p, 0.1, 0.2))).toFixed(3)
+        kicker.style.opacity = (kickerIn * (1 - ramp(p, T.kickerOut[0], T.kickerOut[1]))).toFixed(3)
         kicker.style.transform = `translateY(${((1 - kickerIn) * 12).toFixed(1)}px)`
       }
       const titleBlock = titleBlockRef.current
       if (titleBlock) {
-        titleBlock.style.transform = `scale(${(1 + 0.14 * ramp(p, 0.14, 0.34)).toFixed(3)})`
+        titleBlock.style.transform = `scale(${(1 + 0.14 * ramp(p, T.titleScale[0], T.titleScale[1])).toFixed(3)})`
       }
-      const titleOut = ramp(p, 0.3, 0.42)
+      const titleOut = ramp(p, T.titleOut[0], T.titleOut[1])
       TITLE_WORDS.forEach((word, i) => {
         const el = titleWordRefs.current[i]
         if (!el) return
-        const tIn = ramp(p, 0.004 + i * 0.007, 0.084 + i * 0.007)
-        const tDrift = ramp(p, word.w[0], word.w[1])
+        const tIn = ramp(p, T.titleIn.base + i * T.titleIn.per, T.titleIn.base + T.titleIn.span + i * T.titleIn.per)
+        const tDrift = ramp(p, T.driftStart + word.off, T.driftStart + word.off + word.dur * T.driftDur)
         const dx = ((word.dx * tDrift) / 100) * W
         const dy = ((word.dy * tDrift) / 100) * H + (1 - tIn) * 46
         el.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) rotate(${(word.rot * tDrift).toFixed(2)}deg) scale(${(1 + (word.sc - 1) * tDrift).toFixed(3)})`
@@ -219,13 +491,13 @@ export default function SceneWork() {
       /* --- Momento 3: primera frase (revelado por máscaras) --- */
       const p1Block = p1BlockRef.current
       if (p1Block) {
-        p1Block.style.transform = `scale(${(0.97 + 0.03 * ramp(p, 0.34, 0.46)).toFixed(3)})`
+        p1Block.style.transform = `scale(${(0.97 + 0.03 * ramp(p, T.p1Scale[0], T.p1Scale[1])).toFixed(3)})`
       }
       PHRASE_1.forEach((_, i) => {
         const el = p1WordRefs.current[i]
         if (!el) return
-        const wIn = ramp(p, 0.34 + i * 0.013, 0.43 + i * 0.013)
-        const wOut = ramp(p, 0.56 + i * 0.008, 0.64 + i * 0.008)
+        const wIn = ramp(p, T.p1In.base + i * T.p1In.per, T.p1In.base + T.p1In.span + i * T.p1In.per)
+        const wOut = ramp(p, T.p1Out.base + i * T.p1Out.per, T.p1Out.base + T.p1Out.span + i * T.p1Out.per)
         const y = (1 - wIn) * 110 - wOut * 110
         el.style.transform = `translateY(${y.toFixed(1)}%)`
       })
@@ -235,17 +507,20 @@ export default function SceneWork() {
         if (word.focus) return
         const el = p2WordRefs.current[word.mi]
         if (!el) return
-        const wIn = ramp(p, 0.68 + word.mi * 0.008, 0.76 + word.mi * 0.008)
-        const wOut = ramp(p, 0.83, 0.9)
+        const wIn = ramp(p, T.p2In.base + word.mi * T.p2In.per, T.p2In.base + T.p2In.span + word.mi * T.p2In.per)
+        const wOut = ramp(p, T.p2Out[0], T.p2Out[1])
         const y = (1 - wIn) * 110 - wOut * 36
         el.style.transform = `translateY(${y.toFixed(1)}%)`
         el.style.opacity = (wIn * (1 - wOut)).toFixed(3)
       })
       const focus = focusWordRef.current
       if (focus) {
-        const tIn = ramp(p, 0.71, 0.8)
-        const grow = ramp(pe, 0.82, 1)
-        const fade = 1 - ramp(pe, 1.04, 1.2)
+        const tIn = ramp(p, T.focusIn[0], T.focusIn[1])
+        // El crecimiento sigue el progreso visual (display): completa en el
+        // estado SALIDA aunque el scroll físico quede anclado en su zona.
+        const grow = ramp(p, T.grow[0], T.grow[1])
+        // La disolución final sí sigue pe: es la salida física hacia la 03.
+        const fade = 1 - ramp(pe, T.fade[0], T.fade[1])
         const scale = (0.92 + 0.08 * tIn) * (1 + 2 * grow)
         const dx = -0.1 * W * grow
         const dy = -0.2 * H * grow
@@ -257,27 +532,30 @@ export default function SceneWork() {
       /* --- Textura: luz, grano y profundidad en evolución --- */
       const bloom = bloomRef.current
       if (bloom) {
-        const op = ramp(p, 0.1, 0.45) * 0.6 * (1 - ramp(p, 0.8, 0.96))
+        const op = ramp(p, T.bloomIn[0], T.bloomIn[1]) * 0.6 * (1 - ramp(p, T.bloomOut[0], T.bloomOut[1]))
         bloom.style.opacity = op.toFixed(3)
         bloom.style.transform = `translate(${(((p * 13 - 5) / 100) * W + cursor.x * 10).toFixed(1)}px, ${(((4 - p * 8) / 100) * H + cursor.y * 8).toFixed(1)}px) scale(${(0.8 + 0.5 * p).toFixed(3)})`
       }
       const causticA = causticARef.current
       if (causticA) {
-        causticA.style.opacity = (ramp(p, 0.15, 0.55) * 0.34 * (1 - ramp(p, 0.82, 0.95))).toFixed(3)
+        causticA.style.opacity = (ramp(p, T.causticAIn[0], T.causticAIn[1]) * 0.34 * (1 - ramp(p, T.causticAOut[0], T.causticAOut[1]))).toFixed(3)
         causticA.style.transform = `scale(${(1 + p * 0.15).toFixed(3)}) rotate(${(p * 6 - 3).toFixed(2)}deg)`
       }
       const causticB = causticBRef.current
       if (causticB) {
-        causticB.style.opacity = (ramp(p, 0.3, 0.7) * 0.22 * (1 - ramp(p, 0.84, 0.96))).toFixed(3)
+        causticB.style.opacity = (ramp(p, T.causticBIn[0], T.causticBIn[1]) * 0.22 * (1 - ramp(p, T.causticBOut[0], T.causticBOut[1]))).toFixed(3)
         causticB.style.transform = `scale(${(1.1 - p * 0.1).toFixed(3)}) rotate(${(-p * 5).toFixed(2)}deg)`
       }
       const grain = grainRef.current
       if (grain) {
-        grain.style.opacity = (0.03 + 0.06 * ramp(p, 0.05, 0.5)).toFixed(3)
+        grain.style.opacity = (0.03 + 0.06 * ramp(p, T.grainIn[0], T.grainIn[1])).toFixed(3)
       }
 
       /* --- Momento 5: del berenjena al marfil de la escena 03 --- */
-      const veilOp = ramp(p, 0.84, 1)
+      // El velo toma también un cierre guiado por pe durante la liberación
+      // del sticky: el marfil se completa antes de que la escena 03 llene
+      // la pantalla, sea cual sea la velocidad a la que se haya recorrido.
+      const veilOp = Math.max(ramp(p, T.veil[0], T.veil[1]), ramp(pe, 1, 1.12))
       const veil = veilRef.current
       if (veil) {
         veil.style.opacity = veilOp.toFixed(3)
@@ -356,7 +634,7 @@ export default function SceneWork() {
       id="escena-2"
       ref={sectionRef}
       aria-labelledby="titulo-escena-2"
-      className="relative h-[240vh] w-full scroll-mt-28 bg-primary-container text-on-surface sm:h-[300vh]"
+      className="relative h-[240vh] w-full scroll-mt-28 bg-primary-container text-on-surface sm:h-[300vh] lg:h-[560vh]"
     >
       <div ref={stageRef} className="sticky top-0 h-svh w-full overflow-hidden">
         {/* Textura abstracta en evolución (luz, grano, desenfoques) */}
