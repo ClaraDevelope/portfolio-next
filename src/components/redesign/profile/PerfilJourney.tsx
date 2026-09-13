@@ -10,7 +10,7 @@
  *  - Formación: Máster en Desarrollo Web FullStack (programa {RockTheCode},
  *    The Power Business School, 2023–2024) como hito principal, con cursos
  *    complementarios (Java, SQL, ingeniería de software).
- *  - Ingenalia Telecom: desarrolladora full-stack junior (2025–actualidad).
+ *  - Ingenalia Telecom: desarrollo full-stack (2025–actualidad).
  * Las cuatro etapas son objetivos del marco conductor: el marco las
  * recorre en orden durante la zona de reposo de la sección.
  */
@@ -37,14 +37,14 @@ const stages = [
     title: "Máster Full Stack",
     description:
       "Máster en Desarrollo Web FullStack en el programa {RockTheCode} de The Power Business School, mi principal hito formativo. Después lo complementé con cursos de Java, SQL e introducción a la ingeniería de software.",
-    footer: ["RockTheCode", "Cursos complementarios"],
+    footer: ["RockTheCode", "Formación"],
   },
   {
     tag: "Etapa 04",
     period: "2025–actualidad",
     title: "Ingenalia Telecom",
     description:
-      "Desarrolladora full-stack junior: backend, automatización e integración de datos en aplicaciones internas.",
+      "Trabajo como desarrolladora full-stack en aplicaciones internas y servicios en producción. Me encargo de analizar necesidades, desarrollar funcionalidades, integrar sistemas, resolver incidencias y acompañar los cambios hasta su puesta en marcha.",
     footer: ["Full-stack", "Actual"],
   },
 ]
@@ -65,18 +65,18 @@ export default function PerfilJourney() {
           <div className="max-w-2xl space-y-space-xs">
             <div className="flex items-center gap-space-xs font-sans text-label-technical font-semibold uppercase tracking-widest text-flame-orange">
               <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-flame-orange" />
-              <span>01 / Trayectoria y conexión</span>
+              <span>01 / TRAYECTORIA</span>
             </div>
             <h2
               id="titulo-perfil-trayectoria"
               className="font-serif text-[2.5rem] leading-[1.15] tracking-[-0.02em] text-on-surface lg:text-headline-xl"
             >
-              De la Educación Social a la <span className="font-light italic text-primary">ingeniería de software</span>.
+              Experiencia y <span className="font-light italic text-primary">formación</span>.
             </h2>
           </div>
           <p className="max-w-md font-sans text-body-lead text-on-surface-variant">
-            Una trayectoria que conecta la escucha humana con el método técnico: entender los
-            problemas desde el origen para construir soluciones útiles y bien estructuradas.
+            Mi trayectoria combina experiencia profesional, formación técnica y trabajo con
+            personas, procesos y necesidades reales.
           </p>
         </div>
 
@@ -114,16 +114,9 @@ export default function PerfilJourney() {
 
         <div className="mt-space-xl flex flex-col items-start justify-between gap-space-xs border-t border-outline-variant/20 pt-space-md font-sans text-label-technical font-semibold uppercase tracking-widest text-on-surface-variant/60 sm:flex-row sm:items-center">
           <span>Cronología</span>
-          <span>Evolución desde el contexto humano hacia el software</span>
+          <span>EXPERIENCIA PROFESIONAL Y FORMACIÓN TÉCNICA</span>
           <span>Valladolid</span>
         </div>
-
-        {/* Orientación profesional, tras la trayectoria */}
-        <p className="max-w-2xl pt-space-lg font-sans text-body-md leading-relaxed text-on-surface-variant">
-          Quiero seguir creciendo en backend y producto digital, tanto en equipos consolidados
-          como en startups y proyectos donde la tecnología dialogue con ámbitos creativos o
-          culturales.
-        </p>
       </div>
     </section>
   )

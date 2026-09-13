@@ -1,30 +1,31 @@
 /**
  * /perfil — Dinámica y equipo (sepia).
- * Reconstrucción de la escena 3 de la exportación de Stitch: tres valores
- * de trabajo alineados con la trayectoria real (comunicación, investigación
- * y cuidado del detalle). La rejilla completa es el objetivo del marco.
+ * Reconstrucción de la escena 3 de la exportación de Stitch: tres
+ * pilares de la forma de trabajo (definición y contexto, IA integrada
+ * en el desarrollo con supervisión técnica, y validación y
+ * mantenibilidad). La rejilla completa es el objetivo del marco.
  */
 const values = [
   {
     number: "01",
-    title: "Comunicación directa y sin rodeos",
+    title: "Definición y contexto",
     description:
-      "Prefiero preguntar a tiempo, hablar con transparencia y contrastar dudas antes de avanzar a ciegas sobre una suposición equivocada.",
-    footer: ["Transparencia", "Sin suposiciones"],
+      "Antes de implementar, aclaro los requisitos, las restricciones y las prioridades. Entender el sistema y el uso real evita decisiones técnicas que después generan más trabajo.",
+    footer: ["Requisitos", "Contexto"],
   },
   {
     number: "02",
-    title: "Curiosidad e investigación honesta",
+    title: "IA integrada en el desarrollo",
     description:
-      "Documentarme a fondo ante un problema o una tecnología nueva; rigor para entender qué ocurre sin pretender saberlo todo de antemano.",
-    footer: ["Investigación", "Rigor real"],
+      "Utilizo IA para investigar, analizar código existente, comparar alternativas, desarrollar y depurar. No acepto sus respuestas de forma automática: las reviso y compruebo dentro del sistema real.",
+    footer: ["IA", "Criterio"],
   },
   {
     number: "03",
-    title: "Cuidado por el detalle útil",
+    title: "Validación y mantenibilidad",
     description:
-      "Código legible, tipado consistente y documentación clara para hacer el trabajo más fácil a quienes comparten el proyecto.",
-    footer: ["Consistencia", "Código legible"],
+      "Compruebo los flujos, los errores y los casos límite. Procuro que el resultado quede bien estructurado, documentado y preparado para que pueda seguir evolucionando.",
+    footer: ["Validación", "Mantenibilidad"],
   },
 ]
 
@@ -51,11 +52,11 @@ export default function PerfilDynamics() {
               id="titulo-perfil-dinamica"
               className="font-serif text-[2.5rem] leading-[1.15] tracking-[-0.02em] text-rich-ink lg:text-headline-xl"
             >
-              Cercanía, rigor y <span className="font-light italic text-rich-ink/80">honestidad técnica</span>.
+              Cómo <span className="font-light italic text-rich-ink/80">trabajo</span>.
             </h2>
             <p className="max-w-2xl pt-space-xs font-sans text-body-lead text-rich-ink/75">
-              Entiendo el trabajo en equipo como un ejercicio de confianza mutua, transparencia
-              y comunicación diaria.
+              Combino análisis, criterio técnico y herramientas de IA para trabajar con rapidez
+              sin perder el control sobre el resultado.
             </p>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ArrowDown, FileDown } from "lucide-react"
 import PortraitFrame from "../PortraitFrame"
 
@@ -58,13 +59,13 @@ export default function SceneIntro() {
               Aprendí a leer contextos antes que código.
             </p>
             <p className="max-w-xl font-sans text-body-lead leading-relaxed text-rich-ink/80">
-              Hoy desarrollo aplicaciones, automatizaciones y servicios prestando atención a las
+              Desarrollo aplicaciones, automatizaciones y servicios prestando atención a las
               personas, los procesos y los datos que necesitan encajar para que algo funcione.
             </p>
 
             <div className="flex flex-wrap items-center gap-space-lg pt-space-md">
-              <a
-                href="#escena-2"
+              <Link
+                href="/trabajo"
                 className="group inline-flex items-center gap-space-sm font-sans text-caption uppercase tracking-wider text-rich-ink transition-colors duration-200 hover:text-flame-orange-deep focus:outline-none focus-visible:ring-2 focus-visible:ring-flame-orange rounded-sm"
               >
                 <span
@@ -74,7 +75,7 @@ export default function SceneIntro() {
                   <ArrowDown size={14} />
                 </span>
                 Ver mi trabajo
-              </a>
+              </Link>
               <span aria-hidden="true" className="hidden font-sans text-caption text-rich-ink/30 sm:inline">
                 ·
               </span>

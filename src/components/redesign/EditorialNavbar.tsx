@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import clsx from "clsx"
@@ -78,12 +79,14 @@ export default function EditorialNavbar() {
           })}
         </ul>
 
-        <p
-          className="font-sans text-label-technical uppercase tracking-widest text-flame-orange lg:hidden"
-          aria-hidden="true"
+        {/* Marca (logo del favicon) — solo navegación móvil, en el lugar de CMC */}
+        <Link
+          href="/"
+          aria-label="Ir al inicio"
+          className="flex items-center rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-flame-orange lg:hidden"
         >
-          CMC
-        </p>
+          <Image src="/icons/icon-192.png" alt="" width={24} height={24} className="h-6 w-6" />
+        </Link>
       </nav>
 
       {menuOpen && (

@@ -35,7 +35,7 @@ export default function PerfilOpening() {
             Perfil<span className="text-flame-orange">.</span>
           </h1>
           <p className="max-w-xl font-serif text-[1.75rem] font-light leading-snug text-rich-ink/90 italic md:text-[2.25rem] lg:text-headline-lg">
-            Entender el contexto antes de escribir una línea de código.
+            Desarrollo de software e IA aplicada con criterio técnico.
           </p>
 
           {/* Objetivo inicial del marco conductor: párrafo introductorio.
@@ -45,10 +45,10 @@ export default function PerfilOpening() {
             data-frame-target
             className="max-w-2xl p-6 font-sans text-body-lead text-rich-ink/85"
           >
-            Vengo de la educación social y de la gestión de una librería-café en cooperativa.
-            El paso al desarrollo de software no fue una ruptura, sino un cambio de
-            herramienta: observar procesos, detectar fricciones reales y ordenar la
-            información para que sea útil a las personas.
+            Desarrollo aplicaciones, servicios e integraciones que automatizan procesos y
+            conectan datos entre sistemas. Utilizo IA durante el análisis y el desarrollo para
+            investigar, comprender bases de código, contrastar soluciones y avanzar con más
+            rapidez, revisando siempre la fiabilidad y el encaje de cada resultado.
           </p>
 
           <a
