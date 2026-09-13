@@ -5,7 +5,7 @@ import type { FrameSection } from "../TravelFrame"
  * /contacto para el marco conductor y los puntos de progreso.
  * La página mantiene la atmósfera oscura continua de la exportación.
  */
-export const CONTACT_EMAIL = "claramanzanocorona@gmail.com"
+export const CONTACT_EMAIL = "claramanzano.dev@gmail.com"
 export const LINKEDIN_URL = "https://linkedin.com/in/clara-manzano-corona"
 
 export const contactoFrameSections: readonly FrameSection[] = [
