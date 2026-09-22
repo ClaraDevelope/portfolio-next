@@ -42,7 +42,13 @@ import { usePrefersReducedMotion } from "../usePrefersReducedMotion"
  *   hacer scroll). El estado SALIDA no estaciona: entrega la escena a la
  *   03 en cuanto completa la transformación final.
  * - Escritorio: reacción mínima de la textura al cursor.
- * - Móvil (< 1024px): comportamiento continuo anterior, sin cambios.
+ * - Móvil (< 768px): scroll natural continuo, sin máquina de estados, sin
+ *   re-anclaje ni bloqueo: la escena se recorre de corrido con el scroll,
+ *   termina una sola vez y libera el sticky hacia la escena 03. La deriva
+ *   del título y las transformaciones se amortiguan para que ninguna
+ *   palabra salga del encuadre, y «la pantalla.» viaja agrupada en el
+ *   reparto de líneas de la primera frase.
+ * - Tablet (768–1023px): comportamiento continuo anterior, sin cambios.
  * - prefers-reduced-motion: los tres momentos textuales en secuencia
  *   estática y legible, sin sticky ni bloqueo.
  *
@@ -306,6 +312,8 @@ export default function SceneWork() {
     let rafId = 0
     const cursor = { x: 0, y: 0, tx: 0, ty: 0 }
     const finePointer = window.matchMedia("(pointer: fine)").matches
+    // Móvil (< 768px): sin máquina de estados ni re-anclaje del scroll.
+    const mobileMedia = window.matchMedia("(max-width: 767px)")
 
     const onPointerMove = (event: PointerEvent) => {
       cursor.tx = Math.max(-1, Math.min(1, (event.clientX / window.innerWidth - 0.5) * 2))
@@ -344,13 +352,16 @@ export default function SceneWork() {
       const W = stage.clientWidth
       const H = stage.clientHeight
       const desktop = W >= 1024
+      const mobile = mobileMedia.matches
 
       // Fuera de pantalla: sincronizar progreso y gestos (nada pinta).
       if (rect.bottom < -80 || rect.top > vh + 80) {
-        // Anti-escape: un delta enorme que salte la sección entera de un
-        // solo golpe no abandona la secuencia por la fuerza; se vuelve a la
-        // zona del estado vigente (salvo en la salida, que es legítima).
-        if (inRange && rect.bottom < -80 && stateIdx < SALIDA_IDX && !exitRun) {
+        // Anti-escape (≥ 768px): un delta enorme que salte la sección
+        // entera de un solo golpe no abandona la secuencia por la fuerza;
+        // se vuelve a la zona del estado vigente (salvo en la salida, que
+        // es legítima). En móvil (< 768px) nunca aplica: el scroll queda
+        // siempre libre y la página se liberará al pasar la sección.
+        if (!mobile && inRange && rect.bottom < -80 && stateIdx < SALIDA_IDX && !exitRun) {
           const anchorY = rect.top + window.scrollY + STATE_ANCHORS[stateIdx] * total
           window.scrollTo({ top: anchorY, behavior: "instant" })
           gestureActive = false
@@ -365,9 +376,10 @@ export default function SceneWork() {
         return
       }
 
-      // (Re)entrada en la escena: el gesto que la trajo no cuenta; hay
-      // bloqueo inicial y la entrada del título es una transición completa.
-      if (!inRange) {
+      // (Re)entrada en la escena (≥ 768px): el gesto que la trajo no
+      // cuenta; hay bloqueo inicial y la entrada del título es una
+      // transición completa. En móvil no existe máquina de estados.
+      if (!mobile && !inRange) {
         inRange = true
         gestureActive = false
         exitRun = false
@@ -474,7 +486,7 @@ export default function SceneWork() {
       }
       const titleBlock = titleBlockRef.current
       if (titleBlock) {
-        titleBlock.style.transform = `scale(${(1 + 0.14 * ramp(p, T.titleScale[0], T.titleScale[1])).toFixed(3)})`
+        titleBlock.style.transform = `scale(${(1 + 0.14 * ramp(p, T.titleScale[0], T.titleScale[1]) * (mobile ? 0.4 : 1)).toFixed(3)})`
       }
       const titleOut = ramp(p, T.titleOut[0], T.titleOut[1])
       TITLE_WORDS.forEach((word, i) => {
@@ -482,9 +494,11 @@ export default function SceneWork() {
         if (!el) return
         const tIn = ramp(p, T.titleIn.base + i * T.titleIn.per, T.titleIn.base + T.titleIn.span + i * T.titleIn.per)
         const tDrift = ramp(p, T.driftStart + word.off, T.driftStart + word.off + word.dur * T.driftDur)
-        const dx = ((word.dx * tDrift) / 100) * W
-        const dy = ((word.dy * tDrift) / 100) * H + (1 - tIn) * 46
-        el.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) rotate(${(word.rot * tDrift).toFixed(2)}deg) scale(${(1 + (word.sc - 1) * tDrift).toFixed(3)})`
+        // Móvil: deriva amortiguada para que ninguna palabra salga del encuadre.
+        const k = mobile ? 0.2 : 1
+        const dx = ((word.dx * tDrift * k) / 100) * W
+        const dy = ((word.dy * tDrift * k) / 100) * H + (1 - tIn) * 46
+        el.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) rotate(${(word.rot * tDrift * k).toFixed(2)}deg) scale(${(1 + (word.sc - 1) * tDrift * k).toFixed(3)})`
         el.style.opacity = (tIn * (1 - titleOut)).toFixed(3)
       })
 
@@ -521,9 +535,32 @@ export default function SceneWork() {
         const grow = ramp(p, T.grow[0], T.grow[1])
         // La disolución final sí sigue pe: es la salida física hacia la 03.
         const fade = 1 - ramp(pe, T.fade[0], T.fade[1])
-        const scale = (0.92 + 0.08 * tIn) * (1 + 2 * grow)
-        const dx = -0.1 * W * grow
-        const dy = -0.2 * H * grow
+        let dx: number
+        let dy: number
+        let scale: number
+        if (mobile) {
+          // Móvil: la palabra puente crece hasta ocupar el encuadre,
+          // centrada en el escenario y sin sangrar los bordes (la caja
+          // natural se mide con el transform anulado de forma síncrona,
+          // sin llegar a pintarse). En escritorio se conserva la deriva
+          // original hacia la esquina como continuidad con la escena 03.
+          const prevTransform = focus.style.transform
+          focus.style.transform = "none"
+          const fr = focus.getBoundingClientRect()
+          const sr = stage.getBoundingClientRect()
+          focus.style.transform = prevTransform
+          const cx = fr.left + fr.width / 2 - sr.left
+          const cy = fr.top + fr.height / 2 - sr.top
+          const hw = fr.width / 2
+          const maxS = Math.max(1.15, Math.min(2.2, (W * 0.9) / (hw * 2)))
+          dx = (W / 2 - cx) * grow
+          dy = (H * 0.44 - cy) * grow
+          scale = (0.92 + 0.08 * tIn) * (1 + (maxS - 1) * grow)
+        } else {
+          dx = -0.1 * W * grow
+          dy = -0.2 * H * grow
+          scale = (0.92 + 0.08 * tIn) * (1 + 2 * grow)
+        }
         focus.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${scale.toFixed(3)})`
         focus.style.opacity = (tIn * fade).toFixed(3)
         focus.style.filter = `blur(${((1 - tIn) * 9).toFixed(1)}px)`
@@ -663,7 +700,7 @@ export default function SceneWork() {
           </div>
           <h2
             id="titulo-escena-2"
-            className="flex max-w-6xl flex-wrap gap-x-[0.26em] font-serif text-[2.6rem] leading-[1.08] tracking-[-0.02em] text-on-surface sm:text-[3.9rem] lg:text-[5.4rem]"
+            className="flex max-w-6xl flex-wrap gap-x-[0.26em] font-serif text-[2.2rem] leading-[1.08] tracking-[-0.02em] text-on-surface sm:text-[3.9rem] lg:text-[5.4rem]"
           >
             {TITLE_WORDS.map((word, i) => (
               <span
@@ -684,20 +721,30 @@ export default function SceneWork() {
         {/* Momento 3: primera frase, centrada, revelado por máscaras */}
         <p
           ref={p1BlockRef}
-          className="absolute inset-0 z-10 flex flex-wrap items-center justify-center gap-x-[0.28em] px-margin-mobile font-serif text-[1.9rem] leading-[1.25] text-on-surface sm:text-[2.75rem] sm:px-margin-tablet lg:px-margin lg:text-[3.5rem]"
+          className="absolute inset-0 z-10 flex flex-wrap content-center items-center justify-center gap-x-[0.28em] px-margin-mobile font-serif text-[1.9rem] leading-[1.25] text-on-surface sm:text-[2.75rem] sm:px-margin-tablet md:content-stretch lg:px-margin lg:text-[3.5rem]"
           style={{ transform: "scale(0.97)" }}
         >
-          {PHRASE_1.map((text, i) => (
+          {PHRASE_1.slice(0, 5).map((text, i) => (
             <span key={text} className="inline-block overflow-hidden pb-[0.14em] -mb-[0.14em]">
               <span ref={(el) => { p1WordRefs.current[i] = el }} className="inline-block will-change-transform" style={maskStyle}>
                 {text}
               </span>
             </span>
           )).flatMap((node, i) => (i === 0 ? [node] : [" ", node]))}
+          {" "}
+          <span className="inline-flex gap-x-[0.28em] md:contents">
+            {PHRASE_1.slice(5).map((text, i) => (
+              <span key={text} className="inline-block overflow-hidden pb-[0.14em] -mb-[0.14em]">
+                <span ref={(el) => { p1WordRefs.current[5 + i] = el }} className="inline-block will-change-transform" style={maskStyle}>
+                  {text}
+                </span>
+              </span>
+            ))}
+          </span>
         </p>
 
         {/* Momento 4–5: segunda frase; «entendiendo» crece como puente */}
-        <p className="absolute inset-0 z-10 flex flex-wrap items-center justify-center gap-x-[0.28em] px-margin-mobile font-serif text-[1.9rem] leading-[1.25] text-on-surface sm:text-[2.75rem] sm:px-margin-tablet lg:px-margin lg:text-[3.5rem]">
+        <p className="absolute inset-0 z-10 flex flex-wrap content-center items-center justify-center gap-x-[0.28em] px-margin-mobile font-serif text-[1.9rem] leading-[1.25] text-on-surface sm:text-[2.75rem] sm:px-margin-tablet md:content-stretch lg:px-margin lg:text-[3.5rem]">
           {PHRASE_2.map((word) =>
             word.focus ? (
               <span
